@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lily Dung — Product Strategy · Payments & Fintech</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#10192B;
+    --ink-2:#1B2740;
+    --paper:#F6F5F1;
+    --paper-2:#EFEDE6;
+    --brass:#A8843E;
+    --brass-light:#C6A462;
+    --slate:#4A5060;
+    --slate-light:#767C8A;
+    --line:#DAD6CC;
+    --teal:#2F5D57;
+    --max:1120px;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Inter', sans-serif;
+    font-size:16px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+    *{animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important;}
+  }
+  a{color:inherit;}
+  .wrap{max-width:var(--max); margin:0 auto; padding:0 32px;}
+  h1,h2,h3{font-family:'Fraunces', serif; font-weight:500; letter-spacing:-0.01em;}
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--brass);
+    font-weight:500;
+  }
+
+  /* ---------- NAV ---------- */
+  nav{
+    position:fixed; top:0; left:0; right:0; z-index:100;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:22px 32px;
+    background:transparent;
+    transition:background .35s ease, padding .35s ease, box-shadow .35s ease;
+  }
+  nav.scrolled{
+    background:rgba(246,245,241,0.92);
+    backdrop-filter:blur(8px);
+    padding:14px 32px;
+    box-shadow:0 1px 0 var(--line);
+  }
+  .nav-mark{
+    font-family:'Fraunces', serif;
+    font-size:19px;
+    color:#fff;
+    letter-spacing:0.01em;
+    transition:color .35s ease;
+  }
+  nav.scrolled .nav-mark{color:var(--ink);}
+  .nav-links{display:flex; align-items:center; gap:34px; list-style:none;}
+  .nav-links a{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    text-decoration:none;
+    color:rgba(255,255,255,0.82);
+    transition:color .35s ease;
+  }
+  nav.scrolled .nav-links a{color:var(--slate);}
+  .nav-links a:hover{color:var(--brass-light);}
+  .nav-cta{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    text-decoration:none;
+    color:var(--ink) !important;
+    background:var(--brass-light);
+    padding:9px 16px;
+    border-radius:2px;
+    transition:background .25s ease;
+  }
+  .nav-cta:hover{background:#fff;}
+  .nav-toggle{display:none;}
+
+  /* ---------- HERO ---------- */
+  .hero{
+    position:relative;
+    height:100svh;
+    min-height:560px;
+    display:flex;
+    align-items:flex-end;
+    overflow:hidden;
+  }
+  .hero video{
+    position:absolute; inset:0;
+    width:100%; height:100%;
+    object-fit:cover;
+    filter:saturate(0.9) brightness(0.85);
+  }
+  .hero::before{
+    content:"";
+    position:absolute; inset:0;
+    background:
+      linear-gradient(180deg, rgba(16,25,43,0.55) 0%, rgba(16,25,43,0.25) 32%, rgba(16,25,43,0.55) 68%, rgba(16,25,43,0.94) 100%);
+  }
+  .hero-content{
+    position:relative; z-index:2;
+    width:100%;
+    padding-bottom:86px;
+  }
+  .hero-tag{
+    color:var(--brass-light);
+    margin-bottom:18px;
+  }
+  .hero h1{
+    font-size:clamp(48px, 8vw, 92px);
+    color:#fff;
+    line-height:0.98;
+    margin-bottom:20px;
+  }
+  .hero-sub{
+    max-width:560px;
+    color:rgba(255,255,255,0.86);
+    font-size:16.5px;
+    line-height:1.65;
+  }
+  .scroll-cue{
+    position:absolute; right:32px; bottom:36px; z-index:2;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px; letter-spacing:0.1em; text-transform:uppercase;
+    color:rgba(255,255,255,0.65);
+    display:flex; align-items:center; gap:10px;
+  }
+  .scroll-cue .line{width:28px; height:1px; background:rgba(255,255,255,0.5); display:inline-block;}
+
+  /* ---------- STAT TICKER ---------- */
+  .ticker{
+    background:var(--ink);
+    border-top:1px solid rgba(255,255,255,0.08);
+  }
+  .ticker .wrap{
+    display:grid;
+    grid-template-columns:repeat(4, 1fr);
+  }
+  .stat{
+    padding:30px 24px;
+    border-left:1px solid rgba(255,255,255,0.1);
+    text-align:left;
+  }
+  .stat:first-child{border-left:none;}
+  .stat .num{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:clamp(22px, 2.6vw, 30px);
+    color:var(--brass-light);
+    font-weight:500;
+    letter-spacing:-0.01em;
+  }
+  .stat .label{
+    margin-top:6px;
+    font-size:12.5px;
+    color:rgba(255,255,255,0.62);
+    letter-spacing:0.01em;
+  }
+
+  /* ---------- SECTION SHELL ---------- */
+  section{padding:104px 0;}
+  .section-head{margin-bottom:52px;}
+  .section-head h2{font-size:clamp(28px, 3.4vw, 38px); margin-top:10px; color:var(--ink);}
+
+  /* ---------- ABOUT ---------- */
+  .about-grid{
+    display:grid;
+    grid-template-columns:0.9fr 1.1fr;
+    gap:64px;
+    align-items:start;
+  }
+  .about-grid p{
+    color:var(--slate);
+    font-size:17px;
+    line-height:1.75;
+  }
+  .about-grid p + p{margin-top:18px;}
+  .pull{
+    background:var(--paper-2);
+    border-left:3px solid var(--brass);
+    padding:30px 32px;
+    font-family:'Fraunces', serif;
+    font-size:21px;
+    line-height:1.5;
+    color:var(--ink-2);
+    font-weight:400;
+  }
+  .pull span{display:block; margin-top:14px; font-family:'IBM Plex Mono', monospace; font-size:12px; letter-spacing:0.08em; text-transform:uppercase; color:var(--brass); font-weight:500;}
+
+  /* ---------- EXPERIENCE ---------- */
+  .exp-company{
+    display:flex; justify-content:space-between; align-items:baseline;
+    padding-bottom:14px; margin-bottom:8px;
+    border-bottom:1px solid var(--line);
+  }
+  .exp-company h3{font-size:22px; color:var(--ink);}
+  .exp-company .loc{font-family:'IBM Plex Mono', monospace; font-size:12px; color:var(--slate-light); letter-spacing:0.03em;}
+  .exp-company + .role{margin-top:6px;}
+
+  .role{
+    position:relative;
+    padding:26px 0 26px 30px;
+    border-left:2px solid var(--line);
+    margin-left:6px;
+  }
+  .role::before{
+    content:"";
+    position:absolute; left:-6px; top:32px;
+    width:10px; height:10px; border-radius:50%;
+    background:var(--paper); border:2px solid var(--brass);
+  }
+  .role:last-child{border-left:2px solid transparent;}
+  .role-head{
+    display:flex; flex-wrap:wrap; justify-content:space-between; align-items:baseline; gap:8px 20px;
+    margin-bottom:12px;
+  }
+  .role-title{font-weight:600; font-size:16.5px; color:var(--ink);}
+  .role-date{
+    font-family:'IBM Plex Mono', monospace; font-size:12px; color:var(--slate-light); letter-spacing:0.03em; white-space:nowrap;
+  }
+  .role ul{list-style:none;}
+  .role li{
+    position:relative;
+    padding-left:18px;
+    color:var(--slate);
+    font-size:15px;
+    line-height:1.65;
+  }
+  .role li + li{margin-top:8px;}
+  .role li::before{
+    content:"—";
+    position:absolute; left:0; color:var(--brass);
+  }
+  .company-block{margin-bottom:64px;}
+  .company-block:last-child{margin-bottom:0;}
+
+  /* ---------- SKILLS ---------- */
+  .skills-grid{
+    display:grid;
+    grid-template-columns:repeat(2, 1fr);
+    gap:36px 48px;
+  }
+  .skill-cat h4{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px; letter-spacing:0.08em; text-transform:uppercase;
+    color:var(--teal);
+    margin-bottom:14px;
+  }
+  .chips{display:flex; flex-wrap:wrap; gap:10px;}
+  .chip{
+    font-size:14px;
+    color:var(--ink-2);
+    background:#fff;
+    border:1px solid var(--line);
+    padding:8px 14px;
+    border-radius:3px;
+  }
+
+  /* ---------- EDUCATION ---------- */
+  .edu-card{
+    background:var(--paper-2);
+    padding:36px 40px;
+    display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:20px;
+    border-top:2px solid var(--brass);
+  }
+  .edu-card h3{font-size:20px; margin-bottom:6px;}
+  .edu-card .school-loc{font-family:'IBM Plex Mono', monospace; font-size:12px; color:var(--slate-light);}
+  .edu-card .degree{color:var(--slate); margin-top:10px; font-size:15px;}
+  .edu-card .cert{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    color:var(--brass);
+    letter-spacing:0.03em;
+  }
+
+  /* ---------- CONTACT / FOOTER ---------- */
+  footer{
+    background:var(--ink);
+    color:#fff;
+    padding:96px 0 40px;
+  }
+  footer .eyebrow{color:var(--brass-light);}
+  footer h2{color:#fff; font-size:clamp(30px,4vw,44px); margin:12px 0 28px; max-width:600px;}
+  .contact-row{
+    display:flex; flex-wrap:wrap; gap:16px;
+    margin-bottom:70px;
+  }
+  .contact-btn{
+    display:flex; align-items:center; gap:10px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:13px; letter-spacing:0.02em;
+    text-decoration:none;
+    color:#fff;
+    border:1px solid rgba(255,255,255,0.24);
+    padding:14px 20px;
+    border-radius:2px;
+    transition:border-color .25s ease, background .25s ease;
+  }
+  .contact-btn:hover{border-color:var(--brass-light); background:rgba(255,255,255,0.04);}
+  .contact-btn.primary{
+    background:var(--brass-light);
+    color:var(--ink);
+    border-color:var(--brass-light);
+    font-weight:500;
+  }
+  .contact-btn.primary:hover{background:#fff;}
+  .foot-bottom{
+    display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;
+    padding-top:28px;
+    border-top:1px solid rgba(255,255,255,0.12);
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11.5px;
+    color:rgba(255,255,255,0.5);
+    letter-spacing:0.03em;
+  }
+
+  /* ---------- RESPONSIVE ---------- */
+  @media (max-width: 860px){
+    .nav-links{display:none;}
+    .about-grid{grid-template-columns:1fr; gap:36px;}
+    .skills-grid{grid-template-columns:1fr;}
+    .ticker .wrap{grid-template-columns:repeat(2, 1fr);}
+    .stat:nth-child(3){border-left:none;}
+    .stat{padding:24px 18px;}
+    section{padding:74px 0;}
+    .wrap{padding:0 22px;}
+    .role{padding-left:22px;}
+  }
+  @media (max-width:520px){
+    .exp-company{flex-direction:column; align-items:flex-start; gap:4px;}
+  }
+</style>
+</head>
+<body>
+
+<nav id="nav">
+  <div class="nav-mark">Lily Dung</div>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#education">Education</a></li>
+  </ul>
+  <a class="nav-cta" href="#contact">Contact</a>
+</nav>
+
+<header class="hero">
+  <video autoplay muted loop playsinline poster="hero-poster.jpg">
+    <source src="hero-video.mp4" type="video/mp4">
+  </video>
+  <div class="hero-content">
+    <div class="wrap">
+      <div class="eyebrow hero-tag">Product Strategy · Payments · Fintech · AI Adoption</div>
+      <h1>Lily&nbsp;Dung</h1>
+      <p class="hero-sub">Associate at JPMorgan Chase, directing go-to-market strategy for omnichannel and biometric payment products — and leading the firm's evaluation of AI-driven workflow tools.</p>
+    </div>
+  </div>
+  <div class="scroll-cue"><span class="line"></span> Scroll</div>
+</header>
+
+<div class="ticker">
+  <div class="wrap">
+    <div class="stat">
+      <div class="num">$70M</div>
+      <div class="label">Portfolio directed, FY25–FY27</div>
+    </div>
+    <div class="stat">
+      <div class="num">70+</div>
+      <div class="label">Board-level presentations delivered</div>
+    </div>
+    <div class="stat">
+      <div class="num">30%</div>
+      <div class="label">Manual processing time cut via AI tools</div>
+    </div>
+    <div class="stat">
+      <div class="num">$530K</div>
+      <div class="label">Revenue driven through pricing optimization</div>
+    </div>
+  </div>
+</div>
+
+<section id="about">
+  <div class="wrap">
+    <div class="about-grid">
+      <div>
+        <div class="eyebrow">About</div>
+        <h2 style="margin-top:10px; margin-bottom:22px; font-size:30px;">Where payments strategy meets product and AI.</h2>
+        <p>Lily is a product strategist at JPMorgan Chase, where she sits at the intersection of payments, technology, and executive decision-making. Across four rotations inside one of the world's largest financial institutions, she has directed go-to-market strategy and multi-million-dollar portfolio planning for omnichannel and biometric payment products.</p>
+        <p>She currently leads the firm's evaluation and rollout of AI-powered workflow tools — work that cut manual processing time by 30% and sharpened data accuracy across her team. Her background spans product roadmapping, competitive and market analysis, and translating complex data into decisions executive leadership can act on.</p>
+      </div>
+      <div class="pull">
+        “I build the case that gets a product prioritized — from market sizing and competitive analysis to the board deck that gets it funded.”
+        <span>Product Strategy Associate, JPMorgan Chase</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="experience" style="background:var(--paper-2);">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Experience</div>
+      <h2>Four years, four rotations, one throughline.</h2>
+    </div>
+
+    <div class="company-block">
+      <div class="exp-company">
+        <h3>JPMorgan Chase &amp; Co.</h3>
+        <div class="loc">New York, NY</div>
+      </div>
+
+      <div class="role">
+        <div class="role-head">
+          <div class="role-title">Associate — Omnichannel &amp; Biometrics Product Strategy</div>
+          <div class="role-date">May 2025 – Present</div>
+        </div>
+        <ul>
+          <li>Define and execute go-to-market strategy across product initiatives — building roadmaps and aligning cross-functional execution with commercialization goals</li>
+          <li>Produce 70+ board-level presentations, translating market insight and performance metrics into actionable recommendations for executive leadership</li>
+          <li>Lead evaluation and implementation of AI-powered tools and workflow automation, reducing manual processing time by 30% and improving data accuracy</li>
+          <li>Direct FY25–FY27 portfolio planning for a $70M business supporting 100 FTEs, using scenario modeling and KPI analysis to guide investment decisions</li>
+        </ul>
+      </div>
+
+      <div class="role">
+        <div class="role-head">
+          <div class="role-title">Payments Rotational Analyst — Treasury Product Marketing</div>
+          <div class="role-date">Feb 2025 – May 2025</div>
+        </div>
+        <ul>
+          <li>Repositioned product messaging around client-segmentation priorities across marketing, compliance, and advisory teams — strengthening institutional adoption</li>
+          <li>Executed global campaigns distributing treasury and alternatives insight to institutional audiences</li>
+          <li>Institutionalized due diligence and review processes across operations and business stakeholders, strengthening governance</li>
+        </ul>
+      </div>
+
+      <div class="role">
+        <div class="role-head">
+          <div class="role-title">Payments Rotational Analyst — Omnichannel &amp; Biometrics Product Strategy</div>
+          <div class="role-date">Jun 2024 – Feb 2025</div>
+        </div>
+        <ul>
+          <li>Analyzed POS software providers to identify market expansion and partnership opportunities — findings guided leadership to prioritize three high-potential partners</li>
+          <li>Ran ad-hoc portfolio analyses — customer segmentation, market sizing, competitive white space — to inform go-to-market strategy</li>
+          <li>Evaluated scalability of retail and quick-service restaurant verticals using TAM data, recommending two viable channels for growth</li>
+        </ul>
+      </div>
+
+      <div class="role">
+        <div class="role-head">
+          <div class="role-title">Payments Rotational Analyst — Diversified Industries Treasury Sales</div>
+          <div class="role-date">Sep 2023 – May 2024</div>
+        </div>
+        <ul>
+          <li>Generated $530K in incremental revenue through pricing optimization across client portfolios</li>
+          <li>Prepared 30+ executive briefing materials synthesizing industry trends, client performance, and competitive positioning</li>
+          <li>Partnered with senior sales teams to structure treasury solutions aligned to client liquidity and operating needs</li>
+        </ul>
+      </div>
+
+      <div class="role">
+        <div class="role-head">
+          <div class="role-title">Payments Summer Analyst — Small &amp; Medium Business Commercialization</div>
+          <div class="role-date">Jun 2022 – Aug 2022</div>
+        </div>
+        <ul>
+          <li>Supported firmwide initiatives for new payment products in collaboration with cross-functional stakeholders</li>
+          <li>Managed 100+ supporting documents, strengthening process discipline and accessibility</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="company-block">
+      <div class="exp-company">
+        <h3>Nationwide</h3>
+        <div class="loc">Columbus, OH</div>
+      </div>
+      <div class="role">
+        <div class="role-head">
+          <div class="role-title">Internal Audit Intern</div>
+          <div class="role-date">Aug 2021 – Feb 2022</div>
+        </div>
+        <ul>
+          <li>Analyzed complex data points using Tableau to generate insight supporting enterprise recruiting strategy</li>
+          <li>Audited training compliance for 75+ employees, validating accuracy of 100+ recorded training hours</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="skills">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Skills</div>
+      <h2>Toolkit</h2>
+    </div>
+    <div class="skills-grid">
+      <div class="skill-cat">
+        <h4>Product &amp; Strategy</h4>
+        <div class="chips">
+          <span class="chip">Product Roadmapping</span>
+          <span class="chip">Go-to-Market Strategy</span>
+          <span class="chip">Portfolio &amp; Scenario Planning</span>
+          <span class="chip">KPI Analysis</span>
+        </div>
+      </div>
+      <div class="skill-cat">
+        <h4>Data &amp; Insight</h4>
+        <div class="chips">
+          <span class="chip">Market Sizing (TAM)</span>
+          <span class="chip">Competitive Analysis</span>
+          <span class="chip">Customer Segmentation</span>
+          <span class="chip">Tableau</span>
+        </div>
+      </div>
+      <div class="skill-cat">
+        <h4>AI &amp; Automation</h4>
+        <div class="chips">
+          <span class="chip">AI Tool Evaluation</span>
+          <span class="chip">Workflow Automation</span>
+          <span class="chip">Process Optimization</span>
+        </div>
+      </div>
+      <div class="skill-cat">
+        <h4>Communication &amp; Leadership</h4>
+        <div class="chips">
+          <span class="chip">Executive Presentations</span>
+          <span class="chip">Cross-Functional Leadership</span>
+          <span class="chip">Stakeholder Management</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="education" style="padding-top:0; padding-bottom:104px;">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Education</div>
+      <h2>Foundation</h2>
+    </div>
+    <div class="edu-card">
+      <div>
+        <h3>The Ohio State University — Max M. Fisher College of Business</h3>
+        <div class="school-loc">Columbus, OH</div>
+        <div class="degree">Bachelor of Science in Business Administration, Specialization in Finance</div>
+      </div>
+      <div class="cert">CERTIFICATION · Securities Industries Essentials (SIE)</div>
+    </div>
+  </div>
+</section>
+
+<footer id="contact">
+  <div class="wrap">
+    <div class="eyebrow">Contact</div>
+    <h2>Let's talk about where product and payments meet.</h2>
+    <div class="contact-row">
+      <a class="contact-btn primary" href="mailto:lily.dung520@gmail.com">Email — lily.dung520@gmail.com</a>
+      <a class="contact-btn" href="tel:14193779587">419-377-9587</a>
+      <a class="contact-btn" href="#" id="linkedin-link">LinkedIn ↗</a>
+      <span class="contact-btn" style="border-color:transparent; padding-left:0;">New York, NY</span>
+    </div>
+    <div class="foot-bottom">
+      <div>© 2026 Lily Dung</div>
+      <div>Product Strategy · Payments · Fintech</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Nav background on scroll
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => {
+    if(window.scrollY > 40){ nav.classList.add('scrolled'); }
+    else{ nav.classList.remove('scrolled'); }
+  });
+
+  // Set LinkedIn link — update the href below with the real profile URL
+  document.getElementById('linkedin-link').setAttribute('href', 'https://www.linkedin.com/in/lilydung/');
+</script>
+
+</body>
+</html>
