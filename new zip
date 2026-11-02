@@ -1,0 +1,188 @@
+
+(() => {
+  const canvas = document.getElementById("character");
+  if (!canvas) return;
+
+  const ctx = canvas.getContext("2d", { alpha: true });
+  const sprite = new Image();
+
+  sprite.src = "./hero-sprite-transparent.png";
+
+  // Sprite dimensions: 16 frames, 379 x 251 each.
+  const FRAME_W = 379;
+  const FRAME_H = 251;
+
+  // Actual source sequence: left → center → right.
+  const GAZE_FRAMES = [8, 7, 6, 0, 1, 2, 3, 4, 5];
+
+  const CENTER = 2;
+
+  let current = CENTER;
+  let target = CENTER;
+  let displayedFrame = -1;
+  let raf = null;
+  let lastTime = 0;
+
+  let blinkTimer = null;
+  let blinking = false;
+
+  const clamp = (v, min, max) =>
+    Math.max(min, Math.min(max, v));
+
+  // Prepare high-resolution canvas.
+  function resizeCanvas() {
+    const rect = canvas.getBoundingClientRect();
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+    canvas.width = Math.round(rect.width * dpr);
+    canvas.height = Math.round(rect.height * dpr);
+
+    displayedFrame = -1;
+    draw();
+  }
+
+  // Render the selected sprite frame.
+  function draw() {
+    if (!sprite.complete || !sprite.naturalWidth) return;
+
+    const frame = blinking
+      ? 11
+      : GAZE_FRAMES[Math.round(current)];
+
+    if (frame === displayedFrame) return;
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    ctx.drawImage(
+      sprite,
+      frame * FRAME_W,
+      0,
+      FRAME_W,
+      FRAME_H,
+      0,
+      0,
+      canvas.width,
+      canvas.height
+    );
+
+    displayedFrame = frame;
+  }
+
+  // Map the entire screen width to the character's gaze.
+  function updateCursor(event) {
+    if (event.pointerType === "touch") return;
+
+    const x = clamp(
+      event.clientX / window.innerWidth,
+      0,
+      1
+    );
+
+    // Correct center mapping:
+    // Left half: frames 8 → 7 → 6.
+    // Right half: frames 6 → 0 → 1 → 2 → 3 → 4 → 5.
+    if (x < 0.5) {
+      target = (x / 0.5) * CENTER;
+    } else {
+      target =
+        CENTER +
+        ((x - 0.5) / 0.5) *
+        (GAZE_FRAMES.length - 1 - CENTER);
+    }
+
+    requestRender();
+  }
+
+  // Smooth animation loop.
+  function requestRender() {
+    if (!raf) {
+      raf = requestAnimationFrame(render);
+    }
+  }
+
+  function render(timestamp) {
+    raf = null;
+
+    const dt = lastTime
+      ? Math.min(timestamp - lastTime, 50)
+      : 16;
+
+    lastTime = timestamp;
+
+    // Responsive but smooth movement.
+    const easing = 1 - Math.exp(-dt / 65);
+
+    current += (target - current) * easing;
+
+    if (Math.abs(target - current) < 0.015) {
+      current = target;
+    }
+
+    draw();
+
+    // Keep animating only while the character is moving.
+    if (Math.abs(target - current) > 0.015) {
+      requestRender();
+    }
+  }
+
+  // Natural blinking.
+  function scheduleBlink() {
+    clearTimeout(blinkTimer);
+
+    blinkTimer = setTimeout(() => {
+      if (Math.abs(current - CENTER) < 1.2) {
+        blinking = true;
+        displayedFrame = -1;
+        draw();
+
+        setTimeout(() => {
+          blinking = false;
+          displayedFrame = -1;
+          draw();
+          scheduleBlink();
+        }, 140);
+      } else {
+        scheduleBlink();
+      }
+    }, 3200 + Math.random() * 2500);
+  }
+
+  // Track the cursor anywhere in the browser.
+  window.addEventListener(
+    "pointermove",
+    updateCursor,
+    { passive: true }
+  );
+
+  // Return to idle when cursor exits the browser.
+  function returnToIdle() {
+    target = CENTER;
+    requestRender();
+  }
+
+  window.addEventListener("blur", returnToIdle);
+
+  window.addEventListener("pointerout", event => {
+    if (!event.relatedTarget && !event.toElement) {
+      returnToIdle();
+    }
+  });
+
+  window.addEventListener("resize", resizeCanvas);
+
+  sprite.onload = () => {
+    resizeCanvas();
+    scheduleBlink();
+    requestRender();
+  };
+
+  sprite.onerror = () => {
+    console.error("Character sprite failed to load.");
+  };
+
+  if (sprite.complete && sprite.naturalWidth) {
+    resizeCanvas();
+    scheduleBlink();
+  }
+})();
